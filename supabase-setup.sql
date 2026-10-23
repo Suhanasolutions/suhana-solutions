@@ -127,7 +127,7 @@ grant insert on public.service_requests to anon, authenticated;
 grant select on public.service_requests to authenticated;
 grant select on public.admin_users to authenticated;
 grant select, insert on public.business_transactions to authenticated;
-grant usage, select on sequence public.service_requests_id_seq to anon, authenticated;
+-- service_requests.id is UUID in this existing project, so it has no ID sequence.
 grant usage, select on sequence public.business_transactions_id_seq to authenticated;
 
 -- STEP 2: after creating the admin account in Supabase Authentication > Users,
