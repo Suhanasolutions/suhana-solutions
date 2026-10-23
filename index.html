@@ -18,11 +18,42 @@
 <section class="hero"><div><div class="eyebrow">Simple systems. Better business.</div><h1>Your business support, all in one place.</h1><p>Practical bookkeeping, clear Excel reports, business accounts and dependable staffing support for growing businesses in Bhuj, Gandhidham and beyond.</p><div class="actions"><a class="btn" href="#request">Request a service ↗</a><a class="btn outline" href="#services">Explore services</a></div></div><aside class="featurebox"><h3>Support that keeps business moving</h3><div class="feature"><span class="ico">📊</span><div><b>Daily & monthly reports</b><small>Sales, expenses, profit and loss</small></div></div><div class="feature"><span class="ico">🧾</span><div><b>Accounts & bookkeeping</b><small>Purchases, stock and payments</small></div></div><div class="feature"><span class="ico">👥</span><div><b>Staff support</b><small>Staff requests and job enquiries</small></div></div></aside></section>
 <section class="section" id="services"><div class="sectionhead"><div class="eyebrow" style="color:var(--green2)">What we do</div><h2>Business services, made clearer.</h2><p class="sub">Choose the support you need. We’ll help organise the next steps around your business.</p><span class="tag">Bhuj · Gandhidham · Online</span></div><div class="cards"><article class="card"><div class="emoji">📚</div><h3>Bookkeeping</h3><p>Purchase records, payment tracking, expense categories and organised business accounts.</p></article><article class="card"><div class="emoji">📈</div><h3>Excel Reports</h3><p>Daily sales summaries, monthly dashboards, stock tracking and profit-and-loss reports.</p></article><article class="card"><div class="emoji">🧮</div><h3>Business Accounts</h3><p>Support with salary records, pending bills, operating expenses and account summaries.</p></article><article class="card"><div class="emoji">🤝</div><h3>Staff Providing</h3><p>Submit staffing requirements or job requests and coordinate the next steps.</p></article></div></section>
 <section class="section" id="how"><div class="split"><div class="panel"><div class="eyebrow" style="color:var(--green2)">How it works</div><h2>Start with one simple request.</h2><div class="steps"><div class="step"><span class="num">1</span><div><b>Tell us what you need</b><p class="sub">Choose bookkeeping, reports, accounts or staffing.</p></div></div><div class="step"><span class="num">2</span><div><b>We review your request</b><p class="sub">We can discuss your needs and next steps.</p></div></div><div class="step"><span class="num">3</span><div><b>Keep the work organised</b><p class="sub">Plan reports, account records and staffing requirements clearly.</p></div></div></div></div>
-<div class="panel" id="request"><div class="eyebrow" style="color:var(--green2)">Get started</div><h2>Send a service enquiry</h2><p class="sub">Fill in the details to prepare an enquiry email. Nothing is stored on this website.</p><form id="requestForm"><label class="field">Your name<input id="name" required placeholder="Enter your name"></label><label class="field">Mobile number<input id="phone" required inputmode="tel" pattern="[0-9+() -]{8,16}" placeholder="Your contact number"></label><label class="field">Business or organisation<input id="business" placeholder="Business name (optional)"></label><label class="field">What do you need?<select id="service"><option>Bookkeeping</option><option>Excel Reports</option><option>Business Accounts</option><option>Staff Providing</option><option>Special Services — Accountant / GST / Reports</option><option>Want Job</option></select></label><label class="field">Message<textarea id="message" placeholder="Briefly tell us what you need"></textarea></label><button class="btn" type="submit">Prepare enquiry email ↗</button><div id="status" class="status" role="status"></div></form><p class="note">This opens your email app with a prepared message. It does not submit data to a database. Never enter passwords or OTPs here.</p></div></div></section>
+<div class="panel" id="request"><div class="eyebrow" style="color:var(--green2)">Get started</div><h2>Send a service request</h2><p class="sub">Fill in the details and submit your request. Your details will be saved to our service-request database once setup is complete.</p><form id="requestForm"><label class="field">Your name<input id="name" required placeholder="Enter your name"></label><label class="field">Mobile number<input id="phone" required inputmode="tel" pattern="[0-9+() -]{8,16}" placeholder="Your contact number"></label><label class="field">Business or organisation<input id="business" placeholder="Business name (optional)"></label><label class="field">What do you need?<select id="service"><option>Bookkeeping</option><option>Excel Reports</option><option>Business Accounts</option><option>Staff Providing</option><option>Special Services — Accountant / GST / Reports</option><option>Want Job</option></select></label><label class="field">Message<textarea id="message" placeholder="Briefly tell us what you need"></textarea></label><button class="btn" type="submit">Submit service request</button><div id="status" class="status" role="status"></div></form><p class="note">Never enter passwords or OTPs here. Admin-only access to submitted requests will be protected separately.</p></div></div></section>
 </main>
 <footer class="footer"><b>SUHANA SOLUTIONS</b><span>Bookkeeping · Excel Reports · Business Accounts · Staff Providing</span><span>© 2026 SUHANA SOLUTIONS</span></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-document.getElementById('requestForm').addEventListener('submit',function(e){e.preventDefault();const name=document.getElementById('name').value.trim();const phone=document.getElementById('phone').value.trim();const business=document.getElementById('business').value.trim();const service=document.getElementById('service').value;const message=document.getElementById('message').value.trim();const body='Name: '+name+'\nMobile: '+phone+'\nBusiness: '+(business||'Not provided')+'\nService: '+service+'\nMessage: '+(message||'Not provided');const link='mailto:onlineshopping8776@gmail.com?subject='+encodeURIComponent('SUHANA SOLUTIONS enquiry: '+service)+'&body='+encodeURIComponent(body);const box=document.getElementById('status');box.innerHTML='Your enquiry is prepared. <a id="emailLink" href="'+link+'">Open email to send it</a>.';box.classList.add('show');});
+const SUPABASE_URL = 'https://ebqhukfkkhyiguqjpdqt.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_NKkA1qp78eu1fT3-yV-W_w_auHer0Gd';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+document.getElementById('requestForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const button = this.querySelector('button[type="submit"]');
+  const box = document.getElementById('status');
+  const payload = {
+    full_name: document.getElementById('name').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    business_name: document.getElementById('business').value.trim() || null,
+    service_type: document.getElementById('service').value,
+    message: document.getElementById('message').value.trim() || null
+  };
+  button.disabled = true;
+  button.textContent = 'Sending request...';
+  box.textContent = 'Submitting your enquiry securely...';
+  box.classList.add('show');
+  try {
+    const { error } = await supabaseClient.from('service_requests').insert(payload);
+    if (error) throw error;
+    box.textContent = 'Thank you, ' + payload.full_name + '! Your service request has been submitted successfully.';
+    this.reset();
+  } catch (error) {
+    console.error('Service request submission failed:', error);
+    box.textContent = 'Request could not be saved yet. The database table or access policy may not be set up. Please try again shortly or email onlineshopping8776@gmail.com.';
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Submit service request';
+  }
+});
 </script>
 </body>
 </html>
